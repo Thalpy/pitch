@@ -65,7 +65,7 @@ function getCookie(name, defaultval)
   var ca = document.cookie.split(';');
   var nameEQ = name + "=";
   for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
+    var c = ca[i];const signalExists = maybeAmplitude > 0.5;
     while (c.charAt(0) == ' ') c = c.substring(1, c.length); //delete spaces
     if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
   }
@@ -81,6 +81,15 @@ function screensize()
     e = document.documentElement || document.body;
   }
   return {width: e[a + 'Width'], height: e[a + 'Height'], cx: e[a + 'Width'] / 2, cy: e[a + 'Height'] / 2}
+}
+
+function playBeep() {
+    var oscillator = context.createOscillator();
+    oscillator.type = 'square';
+    oscillator.frequency.setValueAtTime(440, context.currentTime); // 440 Hz
+    oscillator.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.1); // play for 100ms
 }
 
 // start audio processing
@@ -220,14 +229,14 @@ function paint(anitime)
       var f1 = track[i - 1][0];
       var f2 = track[i][0];
       var f3 = track[i + 1][0];
-      if ((f1 > 0.45 * f2) && (f1 < 0.55 * f2) && (f3 > 0.45 * f2) && (f3 < 0.55 * f2))
-        track[i][0] = f2 / 2;
-      else if ((f1 > 1.8 * f2) && (f1 < 2.2 * f2) && (f3 > 1.8 * f2) && (f3 < 2.2 * f2))
-        track[i][0] = 2 * f2;
-      else if ((f1 < 0.75 * f2) && (f3 < 0.75 * f2))
-        track[i][0] = 0;
-      else if ((f1 > 1.25 * f2) && (f3 > 1.25 * f2))
-        track[i][0] = 0;
+      //if ((f1 > 0.45 * f2) && (f1 < 0.55 * f2) && (f3 > 0.45 * f2) && (f3 < 0.55 * f2))
+      //  track[i][0] = f2 / 2;
+      //else if ((f1 > 1.8 * f2) && (f1 < 2.2 * f2) && (f3 > 1.8 * f2) && (f3 < 2.2 * f2))
+      //  track[i][0] = 2 * f2;
+      //else if ((f1 < 0.75 * f2) && (f3 < 0.75 * f2))
+      //  track[i][0] = 0;
+      //else if ((f1 > 1.25 * f2) && (f3 > 1.25 * f2))
+      //  track[i][0] = 0;
     }
   }
 
@@ -293,6 +302,7 @@ function paint(anitime)
         const signalExists = maybeAmplitude > 0.5;
         if (pitch < warnOnMin && signalExists) {
           document.body.setAttribute('class', 'warn')
+          playBeep(); // play the beep sound
         } else {
           document.body.setAttribute('class', 'okay')
         }
