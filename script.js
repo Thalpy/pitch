@@ -24,6 +24,7 @@ var beepGain = null;
 var isBeeping = false;  // To track if we're currently beeping
 var MIN_AMPLITUDE = 0.05;  // Adjust based on your requirements
 var BEEP_VOLUME = 0.25;  // Adjust for desired volume (0.1 is 10% of max volume)
+var beepTimeout = null;
 
 // graph
 var canvas;
@@ -123,6 +124,10 @@ function playBeep() {
 }
 
 function startBeeping() {
+    if (beepTimeout) {
+        clearTimeout(beepTimeout);
+        beepTimeout = null;
+    }
     beepGain.gain.setValueAtTime(BEEP_VOLUME, context.currentTime);
     beepOscillator.frequency.setValueAtTime(440, context.currentTime);  // 440 Hz
     context.currentTime + 0.5;  // Wait for half a second
@@ -130,7 +135,13 @@ function startBeeping() {
 }
 
 function stopBeeping() {
-    beepGain.gain.setValueAtTime(0, context.currentTime);  // Silence the beep
+    if (beepTimeout) {
+        clearTimeout(beepTimeout);
+    }
+    beepTimeout = setTimeout(function() {
+        beepGain.gain.setValueAtTime(0, context.currentTime);  // Silence the beep
+        beepTimeout = null;
+    }, 500);  // 0.5 seconds delay
 }
 
 // start audio processing
