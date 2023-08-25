@@ -92,6 +92,11 @@ function screensize()
   return {width: e[a + 'Width'], height: e[a + 'Height'], cx: e[a + 'Width'] / 2, cy: e[a + 'Height'] / 2}
 }
 
+function updateValues() {
+    MIN_AMPLITUDE = parseFloat(document.getElementById("minAmplitude").value);
+    continuousBelowThreshold = parseFloat(document.getElementById("continuousBelowThreshold").value);
+}
+
 function initBeep() {
     if (!context) {
         // Initialize context or handle the error
