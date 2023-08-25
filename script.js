@@ -229,14 +229,14 @@ function paint(anitime)
       var f1 = track[i - 1][0];
       var f2 = track[i][0];
       var f3 = track[i + 1][0];
-      //if ((f1 > 0.45 * f2) && (f1 < 0.55 * f2) && (f3 > 0.45 * f2) && (f3 < 0.55 * f2))
-      //  track[i][0] = f2 / 2;
-      //else if ((f1 > 1.8 * f2) && (f1 < 2.2 * f2) && (f3 > 1.8 * f2) && (f3 < 2.2 * f2))
-      //  track[i][0] = 2 * f2;
-      //else if ((f1 < 0.75 * f2) && (f3 < 0.75 * f2))
-      //  track[i][0] = 0;
-      //else if ((f1 > 1.25 * f2) && (f3 > 1.25 * f2))
-      //  track[i][0] = 0;
+      if ((f1 > 0.45 * f2) && (f1 < 0.55 * f2) && (f3 > 0.45 * f2) && (f3 < 0.55 * f2))
+        track[i][0] = f2 / 2;
+      else if ((f1 > 1.8 * f2) && (f1 < 2.2 * f2) && (f3 > 1.8 * f2) && (f3 < 2.2 * f2))
+        track[i][0] = 2 * f2;
+      else if ((f1 < 0.75 * f2) && (f3 < 0.75 * f2))
+        track[i][0] = 0;
+      else if ((f1 > 1.25 * f2) && (f3 > 1.25 * f2))
+        track[i][0] = 0;
     }
   }
 
