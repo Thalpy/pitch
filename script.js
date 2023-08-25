@@ -18,6 +18,9 @@ var ampmod = true;
 // Stuff I added
 var continuousBelowThresholdCount = 0;
 var continuousBelowThreshold = 25;
+// noise
+var beepOscillator = null;
+var beepGain = null;
 
 // graph
 var canvas;
@@ -86,13 +89,24 @@ function screensize()
   return {width: e[a + 'Width'], height: e[a + 'Height'], cx: e[a + 'Width'] / 2, cy: e[a + 'Height'] / 2}
 }
 
+function initBeep() {
+    beepOscillator = context.createOscillator();
+    beepGain = context.createGain();
+
+    beepOscillator.type = 'square';
+    beepOscillator.frequency.setValueAtTime(440, context.currentTime); // 440 Hz
+    beepOscillator.connect(beepGain);
+    beepGain.connect(context.destination);
+    beepOscillator.start();
+
+    // Initially set the beep to be inaudible
+    beepGain.gain.setValueAtTime(0, context.currentTime);
+}
+
 function playBeep() {
-    var oscillator = context.createOscillator();
-    oscillator.type = 'square';
-    oscillator.frequency.setValueAtTime(440, context.currentTime); // 440 Hz
-    oscillator.connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.1); // play for 100ms
+    // Make the beep audible for 100ms
+    beepGain.gain.setValueAtTime(1, context.currentTime);
+    beepGain.gain.setValueAtTime(0, context.currentTime + 0.1);
 }
 
 // start audio processing
@@ -526,6 +540,8 @@ function initialise()
 
   // set sizes and draw
   doresize();
+  // set up beepy boi
+  initBeep();
 
 }
 
