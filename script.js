@@ -15,6 +15,9 @@ var recording = 0;
 var paused = 0;
 var hscroll = 1;
 var ampmod = true;
+// Stuff I added
+var continuousBelowThresholdCount = 0;
+var continuousBelowThreshold = 25;
 
 // graph
 var canvas;
@@ -300,11 +303,17 @@ function paint(anitime)
         var maybeAmplitude = track[i][1]
 
         const signalExists = maybeAmplitude > 0.5;
+        const signalExists = maybeAmplitude > 0.5;
         if (pitch < warnOnMin && signalExists) {
-          document.body.setAttribute('class', 'warn')
-          playBeep(); // play the beep sound
+            document.body.setAttribute('class', 'warn');
+            continuousBelowThresholdCount++;
+            if (continuousBelowThresholdCount >= continuousBelowThreshold) { 
+                playBeep(); // play the beep sound
+                continuousBelowThresholdCount = 0; // reset the counter after playing the beep
+            }
         } else {
-          document.body.setAttribute('class', 'okay')
+            document.body.setAttribute('class', 'okay');
+            continuousBelowThresholdCount = 0; // reset the counter if the pitch is above the threshold
         }
         var y1 = ctx.height * (Math.log(track[i][0]) - logfxmin) / (logfxmax - logfxmin);
         var y2 = ctx.height * (Math.log(track[i + 1][0]) - logfxmin) / (logfxmax - logfxmin);
