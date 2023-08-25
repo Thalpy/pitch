@@ -90,6 +90,13 @@ function screensize()
 }
 
 function initBeep() {
+    if (!context) {
+        // Initialize context or handle the error
+        return;
+    }
+    if (beepOscillator){
+        return;
+    }
     beepOscillator = context.createOscillator();
     beepGain = context.createGain();
 
@@ -175,6 +182,7 @@ function doRun()
       alert('Web Audio API is not supported in this browser. Try Chrome, Firefox or Safari.');
     }
   }
+  initBeep()
 
   if (micsource == null) {
     navigator.getMedia = (navigator.getUserMedia ||
