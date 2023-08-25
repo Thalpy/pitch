@@ -88,6 +88,15 @@
                 <td colspan="3">&nbsp;</td>
             </tr>
             <tr>
+                <label for="minAmplitude">Min Amplitude:</label>
+                <input type="number" step="0.01" id="minAmplitude" value="0.05">
+                
+                <label for="continuousBelowThreshold">Continuous Below Threshold:</label>
+                <input type="number" step="0.01" id="continuousBelowThreshold" value="0.05">
+                
+                <button onclick="updateValues()">Update Values</button>
+            </tr>
+            <tr>
                 <td colspan="3">
                     <center><button class="button" onclick="onconfigdlg()">OK</button><button class="button" onclick="cancel('configdlg')">Cancel</button></center>
                 </td>
