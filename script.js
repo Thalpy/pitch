@@ -342,6 +342,8 @@ function paint(anitime)
         var maybeAmplitude = track[i][1]
 
         const signalExists = maybeAmplitude > 0.5;
+        const amplitudeAboveThreshold = track[i][1] > MIN_AMPLITUDE;
+
         if (pitch < warnOnMin && signalExists && amplitudeAboveThreshold) {
             document.body.setAttribute('class', 'warn');
             continuousBelowThresholdCount++;
