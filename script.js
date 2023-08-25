@@ -21,6 +21,9 @@ var continuousBelowThreshold = 25;
 // noise
 var beepOscillator = null;
 var beepGain = null;
+var isBeeping = false;  // To track if we're currently beeping
+var MIN_AMPLITUDE = 0.05;  // Adjust based on your requirements
+var BEEP_VOLUME = 0.25;  // Adjust for desired volume (0.1 is 10% of max volume)
 
 // graph
 var canvas;
@@ -100,20 +103,29 @@ function initBeep() {
     beepOscillator = context.createOscillator();
     beepGain = context.createGain();
 
-    beepOscillator.type = 'square';
-    beepOscillator.frequency.setValueAtTime(440, context.currentTime); // 440 Hz
+    beepOscillator.type = 'sine';  // A sine wave is smoother and less jarring
+    beepOscillator.frequency.setValueAtTime(440, context.currentTime);  // Starting frequency
     beepOscillator.connect(beepGain);
     beepGain.connect(context.destination);
+    beepGain.gain.setValueAtTime(0, context.currentTime);  // Start silent
     beepOscillator.start();
-
-    // Initially set the beep to be inaudible
-    beepGain.gain.setValueAtTime(0, context.currentTime);
 }
 
 function playBeep() {
     // Make the beep audible for 100ms
     beepGain.gain.setValueAtTime(1, context.currentTime);
     beepGain.gain.setValueAtTime(0, context.currentTime + 0.1);
+}
+
+function startBeeping() {
+    beepGain.gain.setValueAtTime(BEEP_VOLUME, context.currentTime);
+    beepOscillator.frequency.setValueAtTime(440, context.currentTime);  // 440 Hz
+    context.currentTime + 0.5;  // Wait for half a second
+    beepOscillator.frequency.setValueAtTime(660, context.currentTime);  // 660 Hz
+}
+
+function stopBeeping() {
+    beepGain.gain.setValueAtTime(0, context.currentTime);  // Silence the beep
 }
 
 // start audio processing
@@ -325,14 +337,21 @@ function paint(anitime)
         var maybeAmplitude = track[i][1]
 
         const signalExists = maybeAmplitude > 0.5;
-        if (pitch < warnOnMin && signalExists) {
+        if (pitch < warnOnMin && signalExists && amplitudeAboveThreshold) {
             document.body.setAttribute('class', 'warn');
             continuousBelowThresholdCount++;
             if (continuousBelowThresholdCount >= continuousBelowThreshold) { 
-                playBeep(); // play the beep sound
+                if (!isBeeping) {
+                    startBeeping();
+                    isBeeping = true;
+                }
                 continuousBelowThresholdCount = 0; // reset the counter after playing the beep
             }
         } else {
+            if (isBeeping) {
+                stopBeeping();
+                isBeeping = false;
+            }
             document.body.setAttribute('class', 'okay');
             continuousBelowThresholdCount = 0; // reset the counter if the pitch is above the threshold
         }
